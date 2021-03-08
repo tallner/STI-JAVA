@@ -16,29 +16,77 @@ public class DemoApplication  implements CommandLineRunner {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	public void AddPlayer()
+	public void AddPlayer(int selector)
 	{
-		System.out.println(" ***  ADD NEW PLAYER *** ");
-		System.out.println("Namn:");
-		String name = System.console().readLine(); 			
-		System.out.println("Age:");
-		int age = Integer.parseInt(System.console().readLine()); 			
-		System.out.println("Jerseynumber:");
-		int jersey = Integer.parseInt(System.console().readLine()); 	
-		System.out.println("Stad:");
-		String city = System.console().readLine(); 	
+		final int ADD_PLAYER = 1;
+		final int MODIFY_PLAYER = 2;
+		final int DELETE_PLAYER = 4;
 		
-		Player p = new Player();
-		p.SetAge(age);
-		p.SetName(name);
-		p.SetJersey(jersey);
-		p.SetBorn(city);	
+		String[] outputText = {
+			" BAD VALUE ",
+			" ***  ADD NEW PLAYER *** ",
+			" *** EDIT PLAYER *** "
+		};
+		System.out.println(outputText[selector]);
 
-		playerRepository.save(p);
+
+		// Do not accept NULL string
+		String name = "";
+		while (name.isEmpty()) {
+			System.out.println("Player name:");
+			name = System.console().readLine();
+		}
+
+		String newName = "";
+		if (selector==MODIFY_PLAYER){
+			System.out.println("New name:");
+			newName = System.console().readLine();
+		}
+		
+		System.out.println("Player Age:");
+		int age = Integer.parseInt(System.console().readLine()); 			
+		
+		System.out.println("Player Jerseynumber:");
+		int jersey = Integer.parseInt(System.console().readLine()); 	
+		
+		System.out.println("Player City:");
+		String city = System.console().readLine();
+
+
+		Player p = new Player();
+		String outputMsg = "PLAYER NOT FOUND";
+		for (int j = 1; j <= (int)playerRepository.count(); j++) 
+		{
+			
+			if (selector == MODIFY_PLAYER) p = playerRepository.findById(j).get();
+				
+			if ((selector==ADD_PLAYER) ||
+				((selector==MODIFY_PLAYER) && name.equals(p.GetName())) ) 
+			{
+				if (selector == MODIFY_PLAYER) p.SetName(newName);
+				else p.SetName(name);
+				p.SetAge(age);
+				p.SetJersey(jersey);
+				p.SetBorn(city);	
+
+				playerRepository.save(p);
+
+				outputMsg = "EDIT PLAYER SUCCESFUL";
+
+				break;
+			}
+		}
+		System.out.println(outputMsg);
 	}
 /**/
-	public void EditPlayer()
-	{
+	public void DeletePlayer(int selector) {
+		AddPlayer(selector);
+	}
+	public void EditPlayer(int selector)
+/**/	
+	{	
+		AddPlayer(selector);
+/** /		
 		System.out.println(" *** Edit player *** ");
 		ListPlayer();
 
@@ -77,6 +125,7 @@ public class DemoApplication  implements CommandLineRunner {
 				playerRepository.save(play);
 			}
 		}
+/**/
 	}
 /**/
 	// Get all players
@@ -94,13 +143,15 @@ public class DemoApplication  implements CommandLineRunner {
 			System.out.println(" 1. Add player ");
 			System.out.println(" 2. Edit player ");
 			System.out.println(" 3. List player ");
+			System.out.println(" 4. Delete player ");
 			System.out.println(" 100. Exit ");
 			System.out.println("Ange val");
 			int sel = Integer.parseInt(System.console().readLine());
 			if(sel == 100) break;
-			if(sel == 1) AddPlayer();
-			if(sel == 2) EditPlayer();
+			if(sel == 1) AddPlayer(sel);
+			if(sel == 2) EditPlayer(sel);
 			if(sel == 3) ListPlayer();
+			if(sel == 4) DeletePlayer(sel);
 		}
 
 	}
