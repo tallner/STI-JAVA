@@ -39,33 +39,44 @@ public class DemoApplication  implements CommandLineRunner {
 /**/
 	public void EditPlayer()
 	{
-		Player p = new Player();
-		p = playerRepository.findById(3).get();
-		
-		System.out.println(p.GetBorn());
-		System.out.println(p.getId());
-/** /
 		System.out.println(" *** Edit player *** ");
-		System.out.println("Name of player to edit:");
-		String oldname = System.console().readLine();
+		ListPlayer();
 
-		System.out.println(" *** Add new player *** ");
+		// Do not accept NULL string
+		String oldname = "";
+		while (oldname.isEmpty()) {
+			System.out.println("Select player to edit:");
+			oldname = System.console().readLine();
+		}
 		System.out.println("NewName:");
 		String newname = System.console().readLine();
+
 		System.out.println("NewAge:");
 		int newage = Integer.parseInt(System.console().readLine());
+	
 		System.out.println("NewJNUM:");
-		int newjnum = Integer.parseInt(System.console().readLine());
-		int editindex = playerName.indexOf(oldname);
-		
-		playerName.remove(editindex);
-		playerAge.remove(editindex);
-		playerNum.remove(editindex);
+		int newJnum = Integer.parseInt(System.console().readLine());
 
-		playerName.add(editindex,newname);
-		playerAge.add(editindex,newage);
-		playerNum.add(editindex,newjnum);
-/**/
+		System.out.println("NewCity:");
+		String newcity = System.console().readLine();
+		
+		Player play = new Player();
+		int k = (int)playerRepository.count();
+		
+		for (int j = 1; j <= k; j++) 
+		{
+			play = playerRepository.findById(j).get();
+			
+			String nuvarandeNamne = play.GetName();
+		
+			if ( oldname.equals(nuvarandeNamne) ) {
+				play.SetName(newname);
+				play.SetAge(newage);
+				play.SetJersey(newJnum);
+				play.SetBorn(newcity);
+				playerRepository.save(play);
+			}
+		}
 	}
 /**/
 	// Get all players
@@ -73,11 +84,7 @@ public class DemoApplication  implements CommandLineRunner {
 		Iterable<Player> iterator = playerRepository.findAll();
         iterator.forEach(item -> System.out.println("Namn: "+item.GetName() + " || Ålder: " + item.GetAge() + " || Nr:" + item.GetJersey() + " || Stad: " + item.GetBorn()));
 	}
-/** /
-public void ListPlayer()
-	{
-		
-	}
+/**/
 /**/
 	@Override
 	public void run(String... args) throws Exception {
@@ -85,7 +92,7 @@ public void ListPlayer()
 		{
 			System.out.println(" *** MENY *** ");
 			System.out.println(" 1. Add player ");
-			System.out.println(" 2. Edit player ");//ÖKurs
+			System.out.println(" 2. Edit player ");
 			System.out.println(" 3. List player ");
 			System.out.println(" 100. Exit ");
 			System.out.println("Ange val");
