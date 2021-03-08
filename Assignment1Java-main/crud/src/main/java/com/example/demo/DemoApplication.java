@@ -39,7 +39,8 @@ public class DemoApplication  implements CommandLineRunner {
 
 		String newName = "";
 		if (selector==MODIFY_PLAYER){
-			System.out.println("New name:");
+			ListPlayer();
+			System.out.println("Select name to change:");
 			newName = System.console().readLine();
 		}
 		
@@ -51,7 +52,6 @@ public class DemoApplication  implements CommandLineRunner {
 		
 		System.out.println("Player City:");
 		String city = System.console().readLine();
-
 
 		Player p = new Player();
 		String outputMsg = "PLAYER NOT FOUND";
@@ -80,7 +80,13 @@ public class DemoApplication  implements CommandLineRunner {
 	}
 /**/
 	public void DeletePlayer(int selector) {
-		AddPlayer(selector);
+		ListPlayer();
+
+		System.out.println("Select ID to delete:");
+		int id = Integer.parseInt(System.console().readLine());
+
+		playerRepository.deleteById(id);
+
 	}
 	public void EditPlayer(int selector)
 /**/	
@@ -131,7 +137,7 @@ public class DemoApplication  implements CommandLineRunner {
 	// Get all players
 	public void ListPlayer() {
 		Iterable<Player> iterator = playerRepository.findAll();
-        iterator.forEach(item -> System.out.println("Namn: "+item.GetName() + " || Ålder: " + item.GetAge() + " || Nr:" + item.GetJersey() + " || Stad: " + item.GetBorn()));
+        iterator.forEach(item -> System.out.println("ID: " + item.getId() + " || " + "Namn: "+item.GetName() + " || Ålder: " + item.GetAge() + " || Nr:" + item.GetJersey() + " || Stad: " + item.GetBorn()));
 	}
 /**/
 /**/
