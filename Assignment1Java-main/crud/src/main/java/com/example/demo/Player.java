@@ -26,40 +26,40 @@ public class Player {
     private int jersey;
     private String born;
 
-    public void SetBorn(String s)
+    public void setBorn(String s)
     {
         born  = s;
     }
-    public String GetBorn()
+    public String getBorn()
     {
         return born;
     }
 
 
-    public void SetName(String v)
+    public void setName(String v)
     {
         namn = v;
     }
 
-    public void SetAge(int v)
+    public void setAge(int v)
     {
         age  = v;
     }
-    public void SetJersey(int v)
+    public void setJersey(int v)
     {
         jersey  = v;
     }
 
 
-    public String GetName()
+    public String getName()
     {
         return namn;
     }
-    public int GetAge()
+    public int getAge()
     {
         return age;
     }
-    public int GetJersey()
+    public int getJersey()
     {
         return jersey;
     }

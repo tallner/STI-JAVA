@@ -6,21 +6,48 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
-public class DemoApplication  implements CommandLineRunner {
 
+@SpringBootApplication
+//public class DemoApplication  implements CommandLineRunner { //Commandline inputs and menu
+public class DemoApplication {
+/** /
 	@Autowired
 	private PlayerRepository playerRepository;
-
+/** /
+	@GetMapping(path="/player", produces = "application/json")    
+	List<Player> all(){
+		var l = new ArrayList<Player>();
+		for(Player r : playerRepository.findAll())
+		{
+			l.add(r);
+		}
+		return l;
+	}
+	
+	@GetMapping("/player/{id}")
+	Player one(@PathVariable Integer id) {
+		return playerRepository.findById(id).get();
+	}
+	
+	@PostMapping(path="/player", consumes="application/json",  produces = "application/json")
+	ResponseEntity<Object> add(@RequestBody Player player){
+		playerRepository.save(player);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+		.path("/{id}")
+		.buildAndExpand(player.getId())
+		.toUri();
+		return ResponseEntity.created(location).build();    
+	}
+/**/
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
-
+/** /
 	public void AddPlayer(int selector)
 	{
 		final int ADD_PLAYER = 1;
 		final int MODIFY_PLAYER = 2;
-		final int DELETE_PLAYER = 4;
+		//final int DELETE_PLAYER = 4;
 		
 		String[] outputText = {
 			" BAD VALUE ",
@@ -65,6 +92,7 @@ public class DemoApplication  implements CommandLineRunner {
 			{
 				if (selector == MODIFY_PLAYER) p.SetName(newName);
 				else p.SetName(name);
+				
 				p.SetAge(age);
 				p.SetJersey(jersey);
 				p.SetBorn(city);	
@@ -78,8 +106,8 @@ public class DemoApplication  implements CommandLineRunner {
 		}
 		System.out.println(outputMsg);
 	}
-/**/
-	public void DeletePlayer(int selector) {
+/** /
+	public void DeletePlayer() {
 		ListPlayer();
 
 		System.out.println("Select ID to delete:");
@@ -88,8 +116,8 @@ public class DemoApplication  implements CommandLineRunner {
 		playerRepository.deleteById(id);
 
 	}
-	public void EditPlayer(int selector)
-/**/	
+/** /
+	public void EditPlayer(int selector)	
 	{	
 		AddPlayer(selector);
 /** /		
@@ -131,16 +159,16 @@ public class DemoApplication  implements CommandLineRunner {
 				playerRepository.save(play);
 			}
 		}
-/**/
+
 	}
-/**/
+/** /
 	// Get all players
 	public void ListPlayer() {
 		Iterable<Player> iterator = playerRepository.findAll();
         iterator.forEach(item -> System.out.println("ID: " + item.getId() + " || " + "Namn: "+item.GetName() + " || Ålder: " + item.GetAge() + " || Nr:" + item.GetJersey() + " || Stad: " + item.GetBorn()));
 	}
 /**/
-/**/
+/* CONSOL INPUT * /
 	@Override
 	public void run(String... args) throws Exception {
 		while(true)
@@ -157,9 +185,10 @@ public class DemoApplication  implements CommandLineRunner {
 			if(sel == 1) AddPlayer(sel);
 			if(sel == 2) EditPlayer(sel);
 			if(sel == 3) ListPlayer();
-			if(sel == 4) DeletePlayer(sel);
+			if(sel == 4) DeletePlayer();
 		}
 
 	}
+/**/
 
 }
