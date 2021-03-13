@@ -42,9 +42,15 @@ public class DemoController {
     
 /*List one player with the id {id}*/
     @GetMapping(path="/player/{id}")
-    Player getSingle(@PathVariable Integer id){
-        return playerRepository.findById(id).get();
+/**/public ResponseEntity<Player> getSingle(@PathVariable Integer id){
+        boolean p = playerRepository.findById(id).isPresent();
+        if (p == false) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(playerRepository.findById(id).get());
+        }
     }
+
 
 /*Change a player with the selected id with PUT --> all info needs to be sent again*/
     @PutMapping(path="/player/{id}", consumes="application/json", produces="application/json")
