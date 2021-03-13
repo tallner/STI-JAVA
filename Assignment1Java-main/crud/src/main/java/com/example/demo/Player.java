@@ -21,7 +21,7 @@ public class Player {
       }
     
   
-    private String namn;
+    private String name;
     private int age;
     private int jersey;
     private String born;
@@ -38,7 +38,7 @@ public class Player {
 
     public void setName(String v)
     {
-        namn = v;
+        name = v;
     }
 
     public void setAge(int v)
@@ -53,7 +53,7 @@ public class Player {
 
     public String getName()
     {
-        return namn;
+        return name;
     }
     public int getAge()
     {
