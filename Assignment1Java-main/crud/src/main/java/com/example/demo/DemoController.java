@@ -7,11 +7,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 
 import java.net.URI;
 import java.util.*;
@@ -19,6 +26,8 @@ import java.util.*;
 
 @RestController
 public class DemoController {
+    //private CustomerService customerService;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private PlayerRepository playerRepository;
@@ -92,5 +101,26 @@ public class DemoController {
         }       
 
     }
-/**/
+/* */
+    private Player applyPatchToPlayer(JsonPatch patch, Player targetPlayer) throws JsonPatchException, JsonProcessingException 
+        {
+            JsonNode patched = patch.apply(objectMapper.convertValue(targetPlayer, JsonNode.class));
+            return objectMapper.treeToValue(patched, Player.class);
+        }
+        
+    @PatchMapping(path = "/player/{id}", consumes = "application/json-patch+json")
+    public ResponseEntity<Player> updateCustomer(@PathVariable Integer id, @RequestBody JsonPatch patch) {
+        try {
+            //Player dbPlayer = playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
+            Player dbPlayer = playerRepository.findById(id).get();
+            Player playerPatched = applyPatchToPlayer(patch, dbPlayer);
+            playerRepository.save(playerPatched);
+            return ResponseEntity.ok(playerPatched);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } /** /catch (PlayerNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        /**/
+    }
 }
