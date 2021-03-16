@@ -2,6 +2,7 @@ package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class DemoController {
 
 /*List all players in the player database*/
     @GetMapping(path="/player")
+    @CrossOrigin()
     List<Player> getAll(){
 		var l = new ArrayList<Player>();
 		for(Player r : playerRepository.findAll())
@@ -51,6 +53,7 @@ public class DemoController {
     
 /*List one player with the id {id}*/
     @GetMapping(path="/player/{id}")
+    @CrossOrigin()
 /**/public ResponseEntity<Player> getSingle(@PathVariable Integer id){
         boolean p = playerRepository.findById(id).isPresent();
         if (p == false) {
@@ -63,6 +66,7 @@ public class DemoController {
 
 /*Change a player with the selected id with PUT --> all info needs to be sent again*/
     @PutMapping(path="/player/{id}", consumes="application/json", produces="application/json")
+    @CrossOrigin()
     Player update(@PathVariable Integer id, @RequestBody Player updatedPlayer){ //get player data from the rest interface
         Player dbPlayer = playerRepository.findById(id).get(); //get player by id from the database
 
@@ -78,6 +82,7 @@ public class DemoController {
 
 /*Create a new player and store in the database */
     @PostMapping(path="/player", consumes="application/json", produces="application/json")
+    @CrossOrigin()
     ResponseEntity<Object> add(@RequestBody Player p){
 
         playerRepository.save(p);
@@ -91,6 +96,7 @@ public class DemoController {
 
 /*Delete a player with the corresponding id. Return 404 if not present*/
     @DeleteMapping(path = "/player/{id}")
+    @CrossOrigin()
     ResponseEntity<Object> delete(@PathVariable Integer id){
         if (playerRepository.findById(id).isPresent()) //get player by id from the database
         {
@@ -109,6 +115,7 @@ public class DemoController {
         }
         
     @PatchMapping(path = "/player/{id}", consumes = "application/json-patch+json")
+    @CrossOrigin()
     public ResponseEntity<Player> updateCustomer(@PathVariable Integer id, @RequestBody JsonPatch patch) {
         try {
             //Player dbPlayer = playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
