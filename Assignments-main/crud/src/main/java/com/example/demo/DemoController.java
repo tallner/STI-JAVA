@@ -36,7 +36,7 @@ public class DemoController {
 /*Home message*/
     @GetMapping("/")
     public String home(){
-        return "THIS IS MY FIRST REST API EVER...AND IT WORKS....BAAAAMMMM!!";
+        return "T!";
     }
 
 /*List all players in the player database*/
